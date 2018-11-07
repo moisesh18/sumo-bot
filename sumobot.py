@@ -15,47 +15,70 @@ llantas = MoveTank(OUTPUT_A, OUTPUT_D)
 
 rampa = Motor(OUTPUT_B)
 
-def Caminar (Speed):
-    while color.color_name != 'Black':
-        llantas.on(Speed, Speed)
+accion = " "
+velocidad_llantas = 0
 
-def Detener ():
+def Caminar(Speed):
+    global velocidad_llantas
+    velocidad_llantas = str(Speed)
+    llantas.on(Speed, Speed)
+
+def Detener():
+    global accion
+    accion = "Detenido"
     llantas.off()
 
 def Atras(velocidad, rotaciones):
+    global accion
+    accion = "Reversa"
     llantas.on_for_rotations(SpeedPercent(-velocidad),SpeedPercent(-velocidad), rotaciones)
 
 def GirarDerecha(velocidad, rotaciones):
+    global accion
+    accion = "Girando derecha"
     llantas.on_for_rotations(SpeedPercent(-velocidad),SpeedPercent(velocidad), rotaciones)
 
 def GirarIzquierda(velocidad, rotaciones):
     llantas.on_for_rotations(SpeedPercent(velocidad),SpeedPercent(-velocidad), rotaciones)
 
-def Buscar():
-    
-    Caminar(50)
-    Detener()
-    Atras(50, 1)
-    GirarDerecha(50, 0.8)
-
 def Atacar(speed, rotations):
-    print ("esta atacando")
-    rampa.on_for_rotations(SpeedPercent(-speed), rotations)
+    global accion
+    accion = "Atacando"
+    Caminar(100)
+    #rampa.on_for_rotations(SpeedPercent(-speed), rotations)
+
+def Encontrado(speed):
+    global accion
+    accion = "Encontrado"
+    Caminar(speed)
 
 def Defender(speed, rotations):
     rampa.on_for_rotations(SpeedPercent(speed), rotations)
 
-def Main():
-    while True:
+def Buscar():
+    log = open("log.txt", "w")
+    datos = " "
+    global accion
+    while color.color_name != 'Black':
         if (distancia.distance_centimeters <= 8):
-            #Atacar(100, 5)
-            print ("atacando")
-            Caminar(100)
-        elif distancia.distance_centimeters <= 20:
-            print ("caminando normal")
-            Caminar(70)
+            Atacar(100, 1)
+        elif distancia.distance_centimeters <= 30:
+            Encontrado(70)
         else:
-            Buscar()
+            accion = "Buscando"
+            Caminar(20)
+        
+        datos = velocidad_llantas + "," + color.color_name+ "," + str(distancia.distance_centimeters) + "," + accion
+        log.write(datos + '\n')
+        print(datos)
+    Detener()
+    Atras(50, 1)
+    GirarDerecha(50, 0.5)
+    log.write(datos + '\n')
+    print(datos)
+    log.close()
+    Buscar()
 
-Main()
+#Buscar()
 Detener()
+#Defender(100,1)
