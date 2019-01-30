@@ -18,6 +18,9 @@ rampa = Motor(OUTPUT_B)
 def Caminar (Speed):
     while color.color_name != 'Black':
         llantas.on(Speed, Speed)
+        if (distancia.distance_centimeters <= 8):
+            Atacar(100, 5)
+            print ("atacando")
 
 def Detener ():
     llantas.off()
@@ -47,15 +50,7 @@ def Defender(speed, rotations):
 
 def Main():
     while True:
-        if (distancia.distance_centimeters <= 8):
-            #Atacar(100, 5)
-            print ("atacando")
-            Caminar(100)
-        elif distancia.distance_centimeters <= 20:
-            print ("caminando normal")
-            Caminar(70)
-        else:
-            Buscar()
+        Buscar()
 
 Main()
 Detener()
